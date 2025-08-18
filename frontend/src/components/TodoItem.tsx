@@ -20,6 +20,7 @@ import {
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Todo } from '@/types/todo';
 import { todoApi } from '@/services/api';
+import EditTodoModal from './EditTodoModal';
 
 interface TodoItemProps {
   todo: Todo;
@@ -29,7 +30,8 @@ interface TodoItemProps {
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
 
@@ -73,7 +75,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted 
         isClosable: true,
       });
     }
-    onClose();
+    onDeleteClose();
   };
 
   return (
@@ -133,7 +135,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted 
               size="sm"
               variant="ghost"
               mr={1}
-              onClick={handleToggleComplete}
+              onClick={onEditOpen}
             />
             <IconButton
               aria-label="Delete todo"
@@ -141,16 +143,16 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted 
               size="sm"
               variant="ghost"
               colorScheme="red"
-              onClick={onOpen}
+              onClick={onDeleteOpen}
             />
           </Flex>
         </Flex>
       </Box>
 
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isDeleteOpen}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={onDeleteClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -163,7 +165,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted 
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onDeleteClose}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
@@ -173,11 +175,13 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onTodoUpdated, onTodoDeleted 
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-      {/* <EditTodoModal
-        isOpenEdit={isOpenEdit}
-        onCloseEdit={onClose}
-        onTodoUpdated={handleTodoUpdated}
-      /> */}
+
+      <EditTodoModal
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        onTodoUpdated={onTodoUpdated}
+        todo={todo}
+      />
     </>
   );
 };

@@ -3,24 +3,16 @@
     "_id": "sample2",
     "title": "Learn React and Node.js",
     "description": "Build fullstack applications with modern web technologies",
-    "completed": true,
+    "completed": false,
     "createdAt": "2025-08-18T09:00:00.000Z",
-    "updatedAt": "2025-08-18T09:30:00.000Z"
+    "updatedAt": "2025-08-18T13:31:13.577Z"
   },
   {
-    "_id": "sample3",
-    "title": "Learn React and Node.js",
-    "description": "Build fullstack applications with modern web technologies",
+    "title": "test",
+    "description": "nick",
     "completed": true,
-    "createdAt": "2025-08-18T09:00:00.000Z",
-    "updatedAt": "2025-08-18T12:41:24.443Z"
-  },
-  {
-    "_id": "sample4",
-    "title": "Learn React and Node.js",
-    "description": "Build fullstack applications with modern web technologies",
-    "completed": true,
-    "createdAt": "2025-08-18T09:00:00.000Z",
-    "updatedAt": "2025-08-18T09:30:00.000Z"
+    "_id": "meh5lnolxx79zg8uhp",
+    "createdAt": "2025-08-18T13:31:36.357Z",
+    "updatedAt": "2025-08-18T13:42:11.519Z"
   }
 ]

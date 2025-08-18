@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -12,6 +12,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Checkbox,
   useToast,
 } from '@chakra-ui/react';
 import { todoApi } from '@/services/api';
@@ -27,8 +28,16 @@ interface EditTodoModalProps {
 const EditTodoModal: React.FC<EditTodoModalProps> = ({ isOpen, onClose, onTodoUpdated, todo }) => {
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description || '');
+  const [completed, setCompleted] = useState(todo.completed);
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+
+  // Reset form when todo prop changes
+  useEffect(() => {
+    setTitle(todo.title);
+    setDescription(todo.description || '');
+    setCompleted(todo.completed);
+  }, [todo]);
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -47,7 +56,7 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({ isOpen, onClose, onTodoUp
       const editTodo: UpdateTodoRequest = {
         title: title.trim(),
         description: description.trim() || undefined,
-        completed: todo.completed,
+        completed: completed,
       };
 
       const updatedTodo = await todoApi.updateTodo(todo._id!, editTodo);
@@ -105,11 +114,20 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({ isOpen, onClose, onTodoUp
               rows={3}
             />
           </FormControl>
+
+          <FormControl mt={4}>
+            <Checkbox
+              isChecked={completed}
+              onChange={(e) => setCompleted(e.target.checked)}
+            >
+              Mark as completed
+            </Checkbox>
+          </FormControl>
         </ModalBody>
 
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={handleSubmit} isLoading={isLoading}>
-            Add Todo
+            Update Todo
           </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </ModalFooter>
