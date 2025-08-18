@@ -17,12 +17,8 @@
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
-    "setup": "npm run install:all && echo '✅ Setup complete! Please ensure MongoDB is running, then run: npm run dev'",
-    "mongodb:start": "./setup-mongodb.sh",
-    "mongodb:docker": "docker run -d --name todo-mongodb -p 27017:27017 mongo:7.0",
-    "mongodb:stop": "docker stop todo-mongodb || brew services stop mongodb/brew/mongodb-community",
-    "mongodb:status": "curl -s http://localhost:5000/mongodb-status || echo 'Backend not running - start with: npm run dev:backend'",
-    "health": "curl -f http://localhost:5000/health || echo 'Backend not running'"
+    "setup": "npm run install:all && echo '✅ Setup complete! Run: npm run dev'",
+    "health": "curl -f http://localhost:5001/health || echo 'Backend not running'"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

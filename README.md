@@ -14,7 +14,7 @@ fullstack/
 ## Features
 
 - **Frontend**: React/Next.js with Chakra UI for beautiful components
-- **Backend**: Express.js REST API with MongoDB for data persistence
+- **Backend**: Express.js REST API with file-based JSON storage
 - **Todo Operations**: Create, Read, Update, Delete todos
 - **Modern Stack**: TypeScript, ESM modules, and best practices
 
@@ -22,7 +22,6 @@ fullstack/
 
 ### Prerequisites
 - Node.js (v18 or later)
-- MongoDB (see setup options below)
 
 ### Quick Start
 
@@ -31,48 +30,17 @@ fullstack/
 npm run setup
 ```
 
-2. **Set up MongoDB** (choose one option):
-
-   **Option A: Install MongoDB locally with Homebrew (macOS)**:
-   ```bash
-   # Install Homebrew if not already installed
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-   # Install and start MongoDB
-   brew tap mongodb/brew
-   brew install mongodb-community
-   brew services start mongodb/brew/mongodb-community
-   ```
-
-   **Option B: Use Docker**:
-   ```bash
-   # If you have Docker installed
-   npm run mongodb:docker
-   ```
-
-   **Option C: Use MongoDB Atlas (Cloud)**:
-   - Go to https://www.mongodb.com/atlas
-   - Create a free account and cluster
-   - Update `backend/.env` with your connection string
-
-3. **Start the development servers**:
+2. **Start the development servers**:
 ```bash
 npm run dev
 ```
 
 This will start:
 - Frontend: http://localhost:3000
-- Backend: http://localhost:5000
-- Health check: http://localhost:5000/health
+- Backend: http://localhost:5001
+- Health check: http://localhost:5001/health
 
-### Troubleshooting
-
-If you see a MongoDB connection error:
-1. Make sure MongoDB is running: `npm run health`
-2. Check the connection string in `backend/.env`
-3. See `MONGODB_SETUP.md` for detailed setup instructions
-
-## API Endpoints
+The app uses file-based JSON storage - no database setup required!## API Endpoints
 
 - `GET /api/todos` - Get all todos
 - `POST /api/todos` - Create a new todo
@@ -91,6 +59,6 @@ If you see a MongoDB connection error:
 ### Backend
 - Node.js
 - Express.js
-- MongoDB with Mongoose
+- File-based JSON storage
 - TypeScript
 - CORS enabled for frontend communication

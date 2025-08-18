@@ -10,9 +10,9 @@
   {
     "title": "test",
     "description": "nick",
-    "completed": true,
+    "completed": false,
     "_id": "meh5lnolxx79zg8uhp",
     "createdAt": "2025-08-18T13:31:36.357Z",
-    "updatedAt": "2025-08-18T13:42:11.519Z"
+    "updatedAt": "2025-08-18T13:51:58.322Z"
   }
 ]
