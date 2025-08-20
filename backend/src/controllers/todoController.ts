@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Todo, ITodo, createTodo as createNewTodo } from '../models/TodoFile.js';
+import { Todo, createTodo as createTodoFile } from '../models/TodoFile.js';
 
 // Get all todos
 export const getTodos = async (req: Request, res: Response): Promise<void> => {
@@ -31,13 +31,13 @@ export const createTodo = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const todo = createNewTodo({
+    const newTodo = createTodoFile({
       title: title.trim(),
       description: description?.trim() || '',
       completed: false
     });
-
-    const savedTodo = await todo.save();
+    
+    const savedTodo = await newTodo.save();
     
     res.status(201).json({
       success: true,
@@ -51,14 +51,15 @@ export const createTodo = async (req: Request, res: Response): Promise<void> => 
       error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-};// Update a todo
+};
+
+// Update a todo
 export const updateTodo = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { title, description, completed } = req.body;
 
-    const updateData: Partial<ITodo> = {};
-
+    const updateData: any = {};
     if (title !== undefined) updateData.title = title.trim();
     if (description !== undefined) updateData.description = description.trim();
     if (completed !== undefined) updateData.completed = completed;

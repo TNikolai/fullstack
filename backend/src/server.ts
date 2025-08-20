@@ -9,7 +9,7 @@ import todoRoutes from './routes/todoRoutes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -25,21 +25,22 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+  const storageType = process.env.USE_FILE_STORAGE === 'true' ? 'file' : 'mongodb';
   res.status(200).json({
     status: 'OK',
-    message: 'Todo API is running with file-based storage',
+    message: `Todo API is running with ${storageType} storage`,
     timestamp: new Date().toISOString(),
-    storage: 'JSON file system (no database required)'
+    storage: storageType
   });
 });
 
-// Storage status endpoint
-app.get('/storage-status', (req, res) => {
+// Database status endpoint
+app.get('/db-status', (req, res) => {
+  const storageType = process.env.USE_FILE_STORAGE === 'true' ? 'File-based' : 'MongoDB';
   res.status(200).json({
-    storage: 'File-based JSON storage',
-    location: 'backend/data/todos.json',
-    status: 'Ready - no database setup required!',
-    message: 'Your todos are stored in a local JSON file'
+    storage: storageType,
+    status: 'Connected',
+    message: `Todos are stored using ${storageType} storage`
   });
 });
 
@@ -67,20 +68,44 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // Start server
 const startServer = async () => {
   try {
-    console.log('📁 Using file-based storage (no database required)');
+    console.log('🔍 Environment check:');
+    console.log('  USE_FILE_STORAGE:', process.env.USE_FILE_STORAGE);
+    console.log('  Should use file storage:', process.env.USE_FILE_STORAGE === 'true');
+    
+    // Only connect to MongoDB if not using file storage
+    if (process.env.USE_FILE_STORAGE !== 'true') {
+      console.log('🔄 Attempting to connect to MongoDB...');
+      // Dynamic import to avoid errors when mongoose isn't available
+      const { connectDatabase } = await import('./config/database.js');
+      await connectDatabase();
+    } else {
+      console.log('📁 Using file-based storage');
+    }
 
-    // Start listening
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`🔗 API base URL: http://localhost:${PORT}/api`);
-      console.log(`� Storage: File-based JSON storage`);
+      const storageType = process.env.USE_FILE_STORAGE === 'true' ? 'File-based' : 'MongoDB (Docker)';
+      console.log(`🗄️  Storage: ${storageType}`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
-    process.exit(1);
+    console.log('💡 Falling back to file storage...');
+    
+    // Set file storage and try again
+    process.env.USE_FILE_STORAGE = 'true';
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT} (file storage mode)`);
+      console.log(`📊 Health check: http://localhost:${PORT}/health`);
+      console.log(`🔗 API base URL: http://localhost:${PORT}/api`);
+      console.log(`📁 Storage: File-based (fallback)`);
+    });
   }
-};// Handle graceful shutdown
+};
+
+// Handle graceful shutdown
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM received, shutting down gracefully');
   process.exit(0);
