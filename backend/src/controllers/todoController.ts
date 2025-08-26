@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Todo, createTodo as createTodoFile } from '../models/TodoFile.js';
+import { Todo } from '../models/Todo.js';
 
 // Get all todos
 export const getTodos = async (req: Request, res: Response): Promise<void> => {
@@ -31,13 +31,15 @@ export const createTodo = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const newTodo = createTodoFile({
+    // Create new MongoDB document - THIS IS WHERE THE MONGO INSERT HAPPENS!
+    const todo = new Todo({
       title: title.trim(),
       description: description?.trim() || '',
       completed: false
     });
     
-    const savedTodo = await newTodo.save();
+    // Save to MongoDB database - THIS TRIGGERS THE ACTUAL DATABASE INSERT
+    const savedTodo = await todo.save();
     
     res.status(201).json({
       success: true,

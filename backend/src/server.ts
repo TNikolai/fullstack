@@ -16,7 +16,7 @@ app.use(helmet()); // Security headers
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? ['https://your-frontend-domain.com']
-    : ['http://localhost:3000'],
+    : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
 app.use(morgan('combined')); // Logging
@@ -71,7 +71,7 @@ const startServer = async () => {
     console.log('🔍 Environment check:');
     console.log('  USE_FILE_STORAGE:', process.env.USE_FILE_STORAGE);
     console.log('  Should use file storage:', process.env.USE_FILE_STORAGE === 'true');
-    
+
     // Only connect to MongoDB if not using file storage
     if (process.env.USE_FILE_STORAGE !== 'true') {
       console.log('🔄 Attempting to connect to MongoDB...');
@@ -92,10 +92,10 @@ const startServer = async () => {
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     console.log('💡 Falling back to file storage...');
-    
+
     // Set file storage and try again
     process.env.USE_FILE_STORAGE = 'true';
-    
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT} (file storage mode)`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
